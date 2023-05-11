@@ -29,6 +29,8 @@ typedef struct __attribute__((packed)) {
     float stick_y;
 } raw_report_t;
 
+int __time_critical_func(readExtAdc)(bool isXaxis);
+
 float read_stick_x();
 
 float read_stick_y();

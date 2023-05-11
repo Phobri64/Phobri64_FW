@@ -116,7 +116,7 @@ void calibration_finish() {
 
 void control_state_machine() {
     // always read raw hardware report first
-    raw_report_t r_report;
+    /*raw_report_t r_report;
     if (_state.calibration_step > 0) {
         // We have nothing to do. Calibration is handled through USB commands.
         // Just communicate default controller state.
@@ -129,5 +129,8 @@ void control_state_machine() {
         processed_stick_t stick_out;
         process_stick(&r_report, &(_state.calib_results), &stick_out);
         from_raw_report(&r_report, &stick_out);
-    }
+    }*/
+
+    global_adc_val.adc_raw_x = readExtAdc(true);
+    global_adc_val.adc_raw_y = readExtAdc(false);
 }

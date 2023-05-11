@@ -29,7 +29,7 @@ void tud_resume_cb(void) { return; }
 // Application can use this to send the next report
 // Note: For composite reports, report[0] is report ID
 void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report,
-                                uint8_t len) {
+                                uint16_t len) {
   (void)instance;
   (void)report;
   (void)len;
@@ -142,7 +142,7 @@ uint16_t send_custom_report(uint8_t cmd) {
   if (!tud_hid_ready())
     return -1;
 
-  tud_hid_report(cmd, NULL, 0);
+  tud_hid_report(cmd, &global_adc_val, sizeof(global_adc_val));
 }
 
 // Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc
@@ -157,7 +157,7 @@ void hid_task(void) {
     return; // not enough time
   start_ms += interval_ms;
 
-  send_hid_report();
+  send_custom_report(REPORT_ID_GAMEPAD);
 }
 
 void usb_init_comms() { tusb_init(); }
