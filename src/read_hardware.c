@@ -2,29 +2,23 @@
 
 //for external MCP3202 adc, 12 bit
 int __time_critical_func(readExtAdc)(bool isXaxis) {
-	//                     start bit
-	//                     |absolute, two channels
-	//                     ||channel 0
-	//                     |||most significant bit first
-	//                     ||||(don't care, even though it gets repeated)
-	//                     ||||null bit
-	//                     |||||11
-	//                     ||||||10  byte 1   byte 2 (when read out)
-	//                     |||||||9  87654321 0_______
-    uint8_t configBits;
+
+    uint8_t config_buf[3] = {
+        0b00000001,
+        0b11100000,
+        0b00000000,
+    };
     if (isXaxis) {
-        configBits = 0b11010000;
-    } else {
-        configBits = 0b11110000; //channel 1
+        config_buf[1] = 0b10100000;
     }
-	uint8_t buf[2];
-	gpio_put(CSTICK_SPI_CS, 0);
+	uint8_t data_buf[3];
+	gpio_put(STICK_SPI_CS, 0);
 
-	spi_read_blocking(spi0, configBits, buf, 3);
+	spi_write_read_blocking(spi0, config_buf, data_buf, 3);
     //debug_print("raw: %x %x %x\n", buf[0], buf[1], buf[2]);
-	uint16_t tempValue = (((buf[0] & 0b00000111) << 9) | buf[1] << 1 | buf[2] >> 7);
+	uint16_t tempValue = ((data_buf[1] & 0x0F) << 8) + data_buf[2];
 
-	gpio_put(CSTICK_SPI_CS, 1);
+	gpio_put(STICK_SPI_CS, 1);
 
 	return tempValue;
 }
@@ -107,6 +101,7 @@ void init_hardware() {
 
     // 3MHz
     spi_init(spi0, 3000*1000);
+    spi_set_format(spi0, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
 	gpio_set_function(STICK_SPI_CLK, GPIO_FUNC_SPI);
 	gpio_set_function(STICK_SPI_TX, GPIO_FUNC_SPI);
 	gpio_set_function(STICK_SPI_RX, GPIO_FUNC_SPI);

@@ -132,5 +132,6 @@ void control_state_machine() {
     }*/
 
     global_adc_val.adc_raw_x = readExtAdc(true);
+    sleep_us(20);
     global_adc_val.adc_raw_y = readExtAdc(false);
 }
