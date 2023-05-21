@@ -1,27 +1,21 @@
 #include "Phobri64.h"
 
-//for external MCP3202 adc, 12 bit
+// for external MCP3202 adc, 12 bit
 int __time_critical_func(readExtAdc)(bool isXaxis) {
 
-    uint8_t config_buf[3] = {
-        0b00000001,
-        0b11100000,
-        0b00000000,
-    };
-    if (isXaxis) {
-        config_buf[1] = 0b10100000;
-    }
-	uint8_t data_buf[3];
-	gpio_put(STICK_SPI_CS, 0);
+    const uint8_t config_val = isXaxis ? 0xD0 : 0xF0;
+    uint8_t data_buf[3];
+    gpio_put(STICK_SPI_CS, 0);
 
-	spi_write_read_blocking(spi0, config_buf, data_buf, 3);
-    //debug_print("raw: %x %x %x\n", buf[0], buf[1], buf[2]);
-	uint16_t tempValue = ((data_buf[1] & 0x0F) << 8) + data_buf[2];
+    spi_read_blocking(spi0, config_val, data_buf, 3);
+    uint16_t tempValue =
+        ((data_buf[0] & 0x07) << 9) | data_buf[1] << 1 | data_buf[2] >> 7;
 
-	gpio_put(STICK_SPI_CS, 1);
+    gpio_put(STICK_SPI_CS, 1);
 
-	return tempValue;
+    return tempValue;
 }
+
 
 /*
 // whichaxis = true => Y

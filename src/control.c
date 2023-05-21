@@ -2,6 +2,8 @@
 
 volatile phobri_state_t _state;
 
+volatile adc_raw_t global_adc_val;
+
 void init_state_machine() {
     _state.calibration_step = 0; // not calibrating
 

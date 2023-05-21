@@ -42,10 +42,11 @@ typedef struct {
 
 extern volatile phobri_state_t _state;
 
-
-struct {
+typedef struct {
     uint16_t adc_raw_x;
     uint16_t adc_raw_y;
-} global_adc_val;
+} adc_raw_t;
+
+extern volatile adc_raw_t global_adc_val;
 
 #endif /* _CONTROL_H */
