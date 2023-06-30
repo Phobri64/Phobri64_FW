@@ -41,6 +41,8 @@ typedef enum {
 typedef enum {
     // -> [cal_step:u32]
     CMD_GET_CAL_STEP = 0x01,
+    CMD_GET_RSQRD_X = 0x02,
+    CMD_GET_RSQRD_Y = 0x03,
 
     // NO CMDS PAST CMD_SETTING_BASE!
 } get_report_cmd_t;

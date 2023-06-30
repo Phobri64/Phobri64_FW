@@ -43,7 +43,28 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id,
     // TODO not Implemented
     (void)report_type;
 
-    return send_config_state(report_id, buffer, bufsize);
+    switch (report_id) {
+    case CMD_GET_CAL_STEP:
+        buffer[0] = _cfg_st.calibration_step;
+        return 1;
+    case CMD_GET_RSQRD_X:
+        memcpy(buffer, &(_cfg_st.calib_results.rsquared_x), 4);
+        return 4;
+    case CMD_GET_RSQRD_Y:
+        memcpy(buffer, &(_cfg_st.calib_results.rsquared_y), 4);
+        return 4;
+    default:
+        break;
+    }
+
+    // None of the commands have matched. Check if we are in the settings
+    // report ID range. If not, this isn't a valid report ID.
+
+    if (report_id < CMD_SETTING_BASE) {
+        return 0;
+    }
+
+    return get_setting(report_id - CMD_SETTING_BASE, buffer);
 }
 
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id,

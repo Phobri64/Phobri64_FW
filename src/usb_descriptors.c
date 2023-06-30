@@ -118,7 +118,7 @@ uint8_t const desc_hid_report[] = {
         HID_LOGICAL_MIN    ( 0x80                                   ) ,\
         HID_LOGICAL_MAX    ( 0x7F                                   ) ,\
         HID_REPORT_COUNT   ( 1                                     ) ,\
-        HID_REPORT_SIZE    ( 8                                      ) ,\
+        HID_REPORT_SIZE    ( 32                                      ) ,\
         HID_FEATURE        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE | HID_WRAP_NO | HID_LINEAR | HID_PREFERRED_STATE | HID_NO_NULL_POSITION | HID_NON_VOLATILE ) ,\
     HID_COLLECTION_END, \
     HID_USAGE_PAGE_N ( HID_USAGE_PAGE_VENDOR, 2     )                 ,\
@@ -129,8 +129,8 @@ uint8_t const desc_hid_report[] = {
         HID_USAGE (0x02),\
         HID_LOGICAL_MIN    ( 0x80                                   ) ,\
         HID_LOGICAL_MAX    ( 0x7F                                   ) ,\
-        HID_REPORT_COUNT   ( 64                                     ) ,\
-        HID_REPORT_SIZE    ( 8                                      ) ,\
+        HID_REPORT_COUNT   ( 1                                     ) ,\
+        HID_REPORT_SIZE    ( 16                                      ) ,\
         HID_INPUT        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE | HID_WRAP_NO | HID_LINEAR | HID_PREFERRED_STATE | HID_NO_NULL_POSITION | HID_NON_VOLATILE ) ,\
     HID_COLLECTION_END \
 };

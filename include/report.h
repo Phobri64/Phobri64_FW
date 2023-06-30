@@ -33,10 +33,10 @@ extern mutex_t _report_lock;
 #ifdef DEBUG
 
 typedef struct {
-    float stick_x_raw;
-    float stick_y_raw;
     float stick_x_lin;
     float stick_y_lin;
+    float stick_x_raw;
+    float stick_y_raw;
 } debug_report_t;
 
 extern debug_report_t _dbg_report;

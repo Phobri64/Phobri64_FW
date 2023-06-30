@@ -27,18 +27,6 @@ void set_setting(setting_id_t st, const uint8_t *buffer) {
 
 uint16_t get_setting(setting_id_t st, uint8_t *buffer) {
     uint16_t sz = 0;
-    switch (st) {
-    case CMD_GET_CAL_STEP: {
-        buffer[0] = _cfg_st.calibration_step;
-        sz = 1;
-        debug_print("Get cal step..\n");
-        break;
-    }
-    default:
-        sz = 0;
-        break;
-    }
-
     return sz;
 }
 
@@ -67,20 +55,25 @@ void calibration_advance() {
         return;
 
     // Capturing the current notch and moving to the next one.
-    float x = 0;
-    float y = 0;
+    uint32_t x = 0;
+    uint32_t y = 0;
     // Taking average of readings over CALIBRATION_NUM_SAMPLES number of
     // samples.
     for (int i = 0; i < CALIBRATION_NUM_SAMPLES; i++) {
-        x += read_stick_x();
-        y += read_stick_y();
+        uint16_t samp_x = read_ext_adc(true);
+        uint16_t samp_y = read_ext_adc(false);
+        x += samp_x;
+        y += samp_y;
+        printf("raw x: %f; y: %f\n", (float)samp_x / 4096.0,
+               (float)samp_y / 4096.0);
     }
-    x /= (float)CALIBRATION_NUM_SAMPLES;
-    y /= (float)CALIBRATION_NUM_SAMPLES;
+    float fx = (float)x / (float)(4096 * CALIBRATION_NUM_SAMPLES);
+    float fy = (float)y / (float)(4096 * CALIBRATION_NUM_SAMPLES);
 
-    raw_cal_points_x[_cfg_st.calibration_step - 1] = x;
-    raw_cal_points_y[_cfg_st.calibration_step - 1] = y;
-    debug_print("Raw X value collected: %f\nRaw Y value collected: %f\n", x, y);
+    raw_cal_points_x[_cfg_st.calibration_step - 1] = fx;
+    raw_cal_points_y[_cfg_st.calibration_step - 1] = fy;
+    debug_print("Raw X value collected: %f\nRaw Y value collected: %f\n", fx,
+                fy);
     _cfg_st.calibration_step++;
 
     if (_cfg_st.calibration_step > CALIBRATION_NUM_STEPS) {

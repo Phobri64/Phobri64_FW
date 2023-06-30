@@ -156,10 +156,36 @@ void linearize_cal(const float cleaned_points_x[],
     // Linearize the calibration points we got in, but we skip in[0],
     // because again, from this point onward, there is an
     // assumption that 0 = center.
+
+    // We will also compute an R^2 value for both axes here.
+    float ssr_x = 0;
+    float ssr_y = 0;
+    float sst_x = 0;
+    float sst_y = 0;
     for (int i = 1; i <= NUM_NOTCHES; i++) {
-        out_x[i - 1] = linearize(in_x[i], calib_results->fit_coeffs_x);
-        out_y[i - 1] = linearize(in_y[i], calib_results->fit_coeffs_y);
+        // y_i is used as the reference val for the regression
+        // while ybar_i is used as the output of the regression
+        // it has nothing to do with the x/y axis of the controller
+
+        // note this also assumes perfect_notches has the same info as
+        // perfect_angles
+        float y_i_x = perfect_notches_x[i - 1];
+        float y_i_y = perfect_notches_y[i - 1];
+        float ybar_i_x = linearize(in_x[i], calib_results->fit_coeffs_x);
+        float ybar_i_y = linearize(in_y[i], calib_results->fit_coeffs_y);
+        out_x[i - 1] = ybar_i_x;
+        out_y[i - 1] = ybar_i_y;
+
+        ssr_x += (y_i_x - ybar_i_x) * (y_i_x - ybar_i_x);
+        ssr_y += (y_i_y - ybar_i_y) * (y_i_y - ybar_i_y);
+        // no average to subtract. we linearize to a symmetrical gate,
+        // so it will come out to 0
+        sst_x += y_i_x * y_i_x;
+        sst_y += y_i_y * y_i_y;
     }
+
+    calib_results->rsquared_x = 1 - ssr_x / sst_x;
+    calib_results->rsquared_y = 1 - ssr_y / sst_y;
 
     debug_print("Center point (confirmation): (x,y) = (%f,%f)\n",
                 linearize(in_x[0], calib_results->fit_coeffs_x),
