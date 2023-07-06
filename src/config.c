@@ -23,6 +23,12 @@ void set_setting(setting_id_t st, const uint8_t *buffer) {
     case DEBUG_REPORTING:
         _cfg_st.report_dbg = buffer[0];
         break;
+    case ZL_BIND:
+        _cfg_st.zl_bind = buffer[0];
+        break;
+    case ZR_BIND:
+        _cfg_st.zr_bind = buffer[0];
+        break;
     }
 }
 
@@ -35,6 +41,12 @@ uint16_t get_setting(setting_id_t st, uint8_t *buffer) {
     switch (st) {
     case DEBUG_REPORTING:
         buffer[0] = _cfg_st.report_dbg;
+        return 1;
+    case ZL_BIND:
+        buffer[0] = _cfg_st.zl_bind;
+        return 1;
+    case ZR_BIND:
+        buffer[0] = _cfg_st.zr_bind;
         return 1;
     }
     return 0;
@@ -161,6 +173,9 @@ void reset_factory_settings() {
         _cfg_st.stick_config.notch_points_y[i] = perfect_notches_y[i];
     }
     _cfg_st.magic = magic;
+
+    _cfg_st.zl_bind = 5; // bit position of Z
+    _cfg_st.zr_bind = 5;
 }
 
 // uint16_t send_config_state(uint8_t report_id, uint8_t *buffer,
