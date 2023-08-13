@@ -37,7 +37,7 @@ void update_n64_report(const buttons_t *btn, processed_stick_t *stick_out) {
                              .dpad_down = btn->dpad_down,
                              .dpad_up = btn->dpad_up,
                              .start = btn->start,
-                             .z = btn->zl,
+                             .z = btn->zl | btn->zr,
                              .b = btn->b,
                              .a = btn->a,
                              .c_right = btn->c_right,
