@@ -67,6 +67,7 @@ target_link_libraries(Phobri64
         )
 
 add_compile_options(-finline-functions)
+add_definitions(-DPICO_XOSC_STARTUP_DELAY_MULTIPLIER=64)
 
 # Enable debugging features when running debug builds
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
