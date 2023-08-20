@@ -57,6 +57,9 @@ typedef enum {
     NOTCH_DOWNRIGHT        = 0x07,
     // [enable:bool] 
     DEBUG_REPORTING        = 0x08,
+    // [button:u8]
+    ZL_BIND                = 0x09,
+    ZR_BIND                = 0x0A,
 } setting_id_t;
 
 // clang-format on
@@ -69,6 +72,8 @@ typedef struct {
     calib_results_t calib_results;
     stick_config_t stick_config;
     bool report_dbg;
+    uint8_t zl_bind;
+    uint8_t zr_bind;
     uint64_t magic; // always keep this one last
 } config_state_t;
 

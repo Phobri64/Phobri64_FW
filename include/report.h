@@ -5,7 +5,7 @@
 
 extern raw_stick_t _raw;
 
-typedef struct __attribute__((packed)) {
+typedef struct __attribute__((packed, aligned(16))) {
     bool dpad_right : 1;
     bool dpad_left : 1;
     bool dpad_down : 1;

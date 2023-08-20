@@ -31,13 +31,15 @@ void create_default_n64_report(void) {
 }
 
 void update_n64_report(const buttons_t *btn, processed_stick_t *stick_out) {
+    uint16_t zl_val = btn->zl ? (0x1 << _cfg_st.zl_bind) : 0x0;
+    uint16_t zr_val = btn->zr ? (0x1 << _cfg_st.zr_bind) : 0x0;
     mutex_enter_blocking(&_report_lock);
     _report = (n64_report_t){.dpad_right = btn->dpad_right,
                              .dpad_left = btn->dpad_left,
                              .dpad_down = btn->dpad_down,
                              .dpad_up = btn->dpad_up,
                              .start = btn->start,
-                             .z = btn->zl | btn->zr,
+                             .z = 0,
                              .b = btn->b,
                              .a = btn->a,
                              .c_right = btn->c_right,
@@ -48,6 +50,9 @@ void update_n64_report(const buttons_t *btn, processed_stick_t *stick_out) {
                              .l = btn->l,
                              .stick_x = stick_out->x,
                              .stick_y = stick_out->y};
+    uint16_t *report_ptr = (uint16_t *)&_report;
+    *report_ptr |= zl_val;
+    *report_ptr |= zr_val;
     mutex_exit(&_report_lock);
 }
 
