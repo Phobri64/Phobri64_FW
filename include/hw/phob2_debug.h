@@ -1,4 +1,4 @@
-#ifndef _PICO_DEBUG_H
+#ifndef PICO_DEBUG_H
 #define _PICO_DEBUG_H
 
 #define JOYBUS_PIN 28

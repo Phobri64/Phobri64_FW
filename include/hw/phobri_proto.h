@@ -1,4 +1,4 @@
-#ifndef _PHOBRI_PROTO_H
+#ifndef PHOBRI_PROTO_H
 #define _PHOBRI_PROTO_H
 
 #define JOYBUS_PIN 11
