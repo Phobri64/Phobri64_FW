@@ -2,6 +2,7 @@
 #define MAIN_H_
 
 #include <hardware/gpio.h>
+#include <hardware/spi.h>
 #include <hardware/watchdog.h>
 #include <pico/bootrom.h>
 #include <pico/stdlib.h>
