@@ -23,6 +23,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       name: Clone Phobri repo
+      with:
+        submodules: recursive  
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
@@ -63,6 +65,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       name: Clone Phobri repo
+      with:
+        submodules: recursive  
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
@@ -106,9 +110,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: Clone Phobri repo
+        with:
+          submodules: recursive  
 
       - uses: actions/download-artifact@v3
         name: Download UF2s
+
 
       - name: Move around files
         run: |
