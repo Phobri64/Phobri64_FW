@@ -36,19 +36,19 @@ void cb_zenith_init_hardware(void) {
 void cb_zenith_read_buttons(btn_data_t *buttons) {
     buttons->s.b1 = !gpio_get(BTN_A_PIN);
     buttons->s.b2 = !gpio_get(BTN_B_PIN);
-    buttons->s.b3 = !gpio_get(BTN_START_PIN);
-    buttons->s.b4 = !gpio_get(BTN_ZR_PIN);
-    buttons->s.b5 = !gpio_get(BTN_ZL_PIN);
-    buttons->s.b6 = !gpio_get(BTN_R_PIN);
-    buttons->s.b7 = !gpio_get(BTN_L_PIN);
-    buttons->s.b8 = !gpio_get(BTN_CU_PIN);
-    buttons->s.b9 = !gpio_get(BTN_CD_PIN);
-    buttons->s.b10 = !gpio_get(BTN_CL_PIN);
-    buttons->s.b11 = !gpio_get(BTN_CR_PIN);
-    buttons->s.b12 = !gpio_get(BTN_DU_PIN);
-    buttons->s.b13 = !gpio_get(BTN_DD_PIN);
-    buttons->s.b14 = !gpio_get(BTN_DL_PIN);
-    buttons->s.b15 = !gpio_get(BTN_DR_PIN);
+    buttons->s.b3 = !gpio_get(BTN_CU_PIN);
+    buttons->s.b4 = !gpio_get(BTN_CD_PIN);
+    buttons->s.b5 = !gpio_get(BTN_CL_PIN);
+    buttons->s.b6 = !gpio_get(BTN_CR_PIN);
+    buttons->s.b7 = !gpio_get(BTN_START_PIN);
+    buttons->s.b8 = !gpio_get(BTN_L_PIN);
+    buttons->s.b9 = !gpio_get(BTN_R_PIN);
+    buttons->s.b10 = !gpio_get(BTN_ZL_PIN);
+    buttons->s.b11 = !gpio_get(BTN_DD_PIN);
+    buttons->s.b12 = !gpio_get(BTN_DL_PIN);
+    buttons->s.b13 = !gpio_get(BTN_DR_PIN);
+    buttons->s.b14 = !gpio_get(BTN_DU_PIN);
+    buttons->s.b15 = !gpio_get(BTN_ZR_PIN);
 }
 
 uint16_t __time_critical_func(read_ext_adc)(bool is_x_axis) {
