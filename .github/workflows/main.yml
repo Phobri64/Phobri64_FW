@@ -25,7 +25,10 @@ jobs:
       name: Clone Phobri repo
       
     - name: Checkout submodules
-      run: git submodule update --init --recursive
+      run: |
+        apt update
+        apt install -y git
+        git submodule update --init --recursive
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
@@ -68,7 +71,10 @@ jobs:
       name: Clone Phobri repo
       
     - name: Checkout submodules
-      run: git submodule update --init --recursive
+      run: |
+        apt update
+        apt install -y git
+        git submodule update --init --recursive
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
