@@ -21,14 +21,18 @@ jobs:
     runs-on: ubuntu-latest
     container: xingrz/rpi-pico-builder:latest
     steps:
-    - uses: actions/checkout@v3
-      name: Clone Phobri repo
-      
-    - name: Checkout submodules
+    - name: Install git
       run: |
         apt update
         apt install -y git
-        git submodule update --init --recursive
+        
+    - uses: actions/checkout@v3
+      name: Clone Phobri repo
+      with:
+        submodules: true
+      
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
@@ -67,14 +71,17 @@ jobs:
     runs-on: ubuntu-latest
     container: xingrz/rpi-pico-builder:latest
     steps:
+
+    - name: Install git
+      run: |
+        apt update
+        apt install -y git
+        
     - uses: actions/checkout@v3
       name: Clone Phobri repo
       
     - name: Checkout submodules
-      run: |
-        apt update
-        apt install -y git
-        git submodule update --init --recursive
+      run: git submodule update --init --recursive
 
     - name: Clone Pico SDK
       uses: suisei-cn/actions-download-file@v1
