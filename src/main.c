@@ -48,6 +48,7 @@ void cb_zenith_read_analog(analog_data_t *analog_data) {
 
 void cb_zenith_core1_init(void) { HW_CORE1_INIT(); }
 void cb_zenith_core0_inject(void) {
+#ifdef DEBUG
     if (!gpio_get(BTN_START_PIN) && !gpio_get(BTN_ZL_PIN) &&
         !gpio_get(BTN_ZR_PIN)) {
         reset_usb_boot(0, 0);
@@ -57,6 +58,7 @@ void cb_zenith_core0_inject(void) {
         !gpio_get(BTN_R_PIN)) {
         watchdog_reboot(0, 0, 0);
     }
+#endif
 }
 void cb_zenith_core1_inject(void) {}
 
