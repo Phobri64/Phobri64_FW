@@ -1,5 +1,7 @@
 #ifndef PHOBRI_PROTO_H
-#define _PHOBRI_PROTO_H
+#define PHOBRI_PROTO_H
+
+#include "zenith/types.h"
 
 #define JOYBUS_PIN 11
 #define BTN_A_PIN 20
@@ -29,4 +31,8 @@
 
 #define DEBUG_TX_PIN 12
 
-#endif /* _PHOBRI_PROTO_H */
+void phobri_proto_core1_init(void);
+
+void phobri_proto_read_analog(analog_data_t *analog);
+
+#endif /* PHOBRI_PROTO_H */
