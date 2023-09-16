@@ -8,8 +8,9 @@
 #include <pico/stdlib.h>
 
 // HARDWARE SELECTION
-// Select just one
-#define HW_PHOBRI_PROTO
+// Define just one on the command line, or you can uncomment here
+// Otherwise, hw_intf.h selects the default in the else branch
+// #define HW_PHOBRI_PROTO
 // #define HW_PHOBRI_V1_X_ANALOG
 // #define HW_PHOBRI_V1_X_3D
 

@@ -5,9 +5,7 @@
 #define ZTH_MANUFACTURER "Zenith Control Labs"
 #define ZTH_PRODUCT "Phobri64"
 
-// TODO: change this to something that you pass to the zenith_init() function
-// because not all interfaces will be in use
-#define HOJA_SERIAL_PIN 11
+#define ZENITH_SERIAL_PIN 11
 
 #define ZTH_N64_REMAP_DEFAULT                                                  \
     {                                                                          \

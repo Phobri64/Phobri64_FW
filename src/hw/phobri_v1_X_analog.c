@@ -33,7 +33,7 @@ void __time_critical_func(ads7142_isr)(uint gpio, uint32_t events) {
     _adc_y_val = data_buf[2] << 8 + data_buf[3];
 }
 
-inline void phobri_v1_x_analog_core1_init(void) {
+void phobri_v1_x_analog_core1_init(void) {
     i2c_init(STICK_I2C_INTF, 400 * 1000);
     gpio_set_function(STICK_I2C_SCL, GPIO_FUNC_I2C);
     gpio_set_function(STICK_I2C_SDA, GPIO_FUNC_I2C);
@@ -44,7 +44,7 @@ inline void phobri_v1_x_analog_core1_init(void) {
                                        true, &ads7142_isr);
 }
 
-inline void phobri_v1_x_analog_read_analog(analog_data_t *analog_data) {
+void phobri_v1_x_analog_read_analog(analog_data_t *analog_data) {
     analog_data->ax1 = UINT_N_TO_AX(_adc_x_val, 16);
     analog_data->ax2 = UINT_N_TO_AX(_adc_y_val, 16);
 }

@@ -11,12 +11,10 @@
 #include "hw/phobri_v1_X.h"
 #define HW_CORE1_INIT phobri_v1_x_analog_core1_init
 #define HW_READ_ANALOG phobri_v1_x_analog_read_analog
-#elif defined(HW_PHOBRI_V1_X_3D)
+#else // HW_PHOBRI_V1_X_3D
 #include "hw/phobri_v1_X.h"
 #define HW_CORE1_INIT phobri_v1_x_3d_core1_init
 #define HW_READ_ANALOG phobri_v1_x_3d_read_analog
-#else
-#error "No hardware selected!"
 #endif
 
 #endif // HW_INTF_H

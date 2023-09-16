@@ -30,6 +30,7 @@
 #define STICK_FLIP_ADC_CHANNELS true
 
 #define DEBUG_TX_PIN 12
+#define DEBUG_UART uart0
 
 void phobri_proto_core1_init(void);
 

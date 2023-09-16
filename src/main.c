@@ -62,10 +62,15 @@ void cb_zenith_core0_inject(void) {
 }
 void cb_zenith_core1_inject(void) {}
 
+bool cb_zenith_user_webusb_cmd(uint8_t *in, uint8_t *out) { return false; }
+
+void cb_zenith_user_settings_reset(uint8_t *data) {}
+
 int main() {
     set_sys_clock_khz(130000, true);
 
-    stdio_init_all();
+    stdio_uart_init_full(DEBUG_UART, 115200, DEBUG_TX_PIN, -1);
+
     printf("Phobri64 Started.\n");
 
     setup_gpio_button(BTN_START_PIN);

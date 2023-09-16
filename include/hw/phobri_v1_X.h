@@ -25,6 +25,7 @@
 
 // TODO: change
 #define DEBUG_TX_PIN 26
+#define DEBUG_UART uart0
 
 // TODO: change
 #define STICK_I2C_INTF i2c1
@@ -37,5 +38,13 @@
 #define I2C_HX_ADDR 0x1C
 #define I2C_HY_ADDR 0x1E
 #define I2C_ADC_ADDR 0x18
+
+void phobri_v1_x_3d_core1_init(void);
+
+void phobri_v1_x_3d_read_analog(analog_data_t *analog);
+
+void phobri_v1_x_analog_core1_init(void);
+
+void phobri_v1_x_analog_read_analog(analog_data_t *analog);
 
 #endif /* PHOBRI_V1_X_H */

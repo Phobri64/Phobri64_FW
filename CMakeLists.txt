@@ -17,17 +17,18 @@ include_directories(
 )
 
 add_executable(${PROJECT_NAME}
-	src/main.c
 	src/hw/phobri_proto.c
 	src/hw/phobri_v1_X_3d.c
 	src/hw/phobri_v1_X_analog.c
+	src/main.c
 )
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mcpu=cortex-m0")
 
 target_compile_definitions(${PROJECT_NAME}
 	PRIVATE
 	PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64
 	# todo: need a way to set this uart tx thing that is compatible with proto & v1.X
-	PICO_DEFAULT_UART_TX_PIN=12
 	#PICO_DEFAULT_BOOT_STAGE2=boot2_generic_03h
 	#PICO_FLASH_SPI_CLKDIV=8
 )
