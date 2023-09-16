@@ -7,13 +7,9 @@
 #include <pico/bootrom.h>
 #include <pico/stdlib.h>
 
-// HARDWARE SELECTION
-// Select just one
-#define HW_PHOBRI_PROTO
-// #define HW_PHOBRI_V1_X_ANALOG
-// #define HW_PHOBRI_V1_X_3D
+#include "hw/phobri_proto.h"
+#include "hw/phobri_v1_X.h"
 
-#include "hw_intf.h"
 #include "zenith.h"
 
 #endif /* MAIN_H_ */
