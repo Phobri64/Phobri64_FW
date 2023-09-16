@@ -5,23 +5,23 @@
 #include <hardware/i2c.h>
 
 #define JOYBUS_PIN 0
-#define V1_X_BTN_A_PIN 11
-#define V1_X_BTN_B_PIN 16
-#define V1_X_BTN_START_PIN 25
-#define V1_X_BTN_ZR_PIN 9
-#define V1_X_BTN_ZL_PIN 24
-#define V1_X_BTN_R_PIN 8
-#define V1_X_BTN_L_PIN 23
+#define BTN_A_PIN 11
+#define BTN_B_PIN 16
+#define BTN_START_PIN 25
+#define BTN_ZR_PIN 9
+#define BTN_ZL_PIN 24
+#define BTN_R_PIN 8
+#define BTN_L_PIN 23
 
-#define V1_X_BTN_CU_PIN 2
-#define V1_X_BTN_CD_PIN 10
-#define V1_X_BTN_CL_PIN 1
-#define V1_X_BTN_CR_PIN 3
+#define BTN_CU_PIN 2
+#define BTN_CD_PIN 10
+#define BTN_CL_PIN 1
+#define BTN_CR_PIN 3
 
-#define V1_X_BTN_DU_PIN 20
-#define V1_X_BTN_DD_PIN 21
-#define V1_X_BTN_DL_PIN 22
-#define V1_X_BTN_DR_PIN 19
+#define BTN_DU_PIN 20
+#define BTN_DD_PIN 21
+#define BTN_DL_PIN 22
+#define BTN_DR_PIN 19
 
 // TODO: change
 #define DEBUG_TX_PIN 26
