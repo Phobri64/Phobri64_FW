@@ -35,8 +35,8 @@
 #define STICK_HY_DRDY 13
 #define STICK_ADC_DRDY_N 15
 
-#define I2C_HX_ADDR 0x1C
-#define I2C_HY_ADDR 0x1E
+#define I2C_HX_ADDR 0x1E
+#define I2C_HY_ADDR 0x1C
 #define I2C_ADC_ADDR 0x18
 
 void phobri_v1_x_3d_core1_init(void);
