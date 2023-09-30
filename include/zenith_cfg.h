@@ -15,4 +15,8 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0                                          \
     }
 
+#ifdef HW_PHOBRI_PROTO
+#define ZTH_SEPARATE_CAL_READ 1
+#endif
+
 #endif // ZENITH_CFG_H

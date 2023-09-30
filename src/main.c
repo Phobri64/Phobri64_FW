@@ -60,7 +60,11 @@ void cb_zenith_core0_inject(void) {
     }
 #endif
 }
-void cb_zenith_core1_inject(void) {}
+void cb_zenith_core1_inject(void) {
+#ifdef HW_PHOBRI_PROTO
+    phobri_proto_core1_inject();
+#endif
+}
 
 bool cb_zenith_user_webusb_cmd(uint8_t *in, uint8_t *out) { return false; }
 

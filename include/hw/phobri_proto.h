@@ -36,4 +36,6 @@ void phobri_proto_core1_init(void);
 
 void phobri_proto_read_analog(analog_data_t *analog);
 
+void phobri_proto_core1_inject();
+
 #endif /* PHOBRI_PROTO_H */
