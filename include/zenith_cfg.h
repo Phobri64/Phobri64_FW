@@ -7,7 +7,8 @@
 
 #define ZTH_PID 0x0001
 
-#define ZENITH_SERIAL_PIN 11
+#include "hw_intf.h"
+#define ZENITH_SERIAL_PIN JOYBUS_PIN
 
 #define ZTH_N64_REMAP_DEFAULT                                                  \
     {                                                                          \

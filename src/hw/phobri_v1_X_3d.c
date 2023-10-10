@@ -74,6 +74,13 @@ void __time_critical_func(hy_drdy_isr)(uint gpio, uint32_t events) {
 }
 
 void phobri_v1_x_3d_core1_init(void) {
+    gpio_init(STICK_HX_DRDY);
+    gpio_init(STICK_HY_DRDY);
+    gpio_init(STICK_ADC_DRDY_N);
+    gpio_set_dir(STICK_HX_DRDY, GPIO_IN);
+    gpio_set_dir(STICK_HY_DRDY, GPIO_IN);
+    gpio_set_dir(STICK_ADC_DRDY_N, GPIO_IN);
+
     i2c_init(STICK_I2C_INTF, 400 * 1000);
     gpio_set_function(STICK_I2C_SCL, GPIO_FUNC_I2C);
     gpio_set_function(STICK_I2C_SDA, GPIO_FUNC_I2C);
