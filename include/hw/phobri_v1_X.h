@@ -7,7 +7,7 @@
 #define JOYBUS_PIN 0
 #define BTN_A_PIN 7
 #define BTN_B_PIN 18
-#define BTN_START_PIN 8
+#define BTN_START_PIN 29
 #define BTN_ZR_PIN 5
 #define BTN_ZL_PIN 28
 #define BTN_R_PIN 4
