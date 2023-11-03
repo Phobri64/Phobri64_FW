@@ -9,8 +9,8 @@
 
 // TODO: expand this with a circular buffer,
 // storing older data and perhaps other axes
-uint16_t _hx_val = 0;
-uint16_t _hy_val = 0;
+ax_t _hx_val = 0;
+ax_t _hy_val = 0;
 
 void lis3mdl_setup(uint i2c_addr) {
     // Temp disabled, LP mode w/ FAST_ODR @ 1kHZ
@@ -28,11 +28,14 @@ void lis3mdl_setup(uint i2c_addr) {
     i2c_write_blocking(STICK_I2C_INTF, i2c_addr, ctrl_reg3_cfg, 2, false);
 }
 
-void __time_critical_func(lis3mdl_read)(uint16_t *dest, uint i2c_addr) {
+void __time_critical_func(lis3mdl_read)(float *dest, uint i2c_addr) {
 
     uint8_t regl;
     uint8_t regh;
     uint8_t read_buf[2];
+    uint32_t xval;
+    uint32_t yval;
+    uint32_t zval;
 
     regl = 0x28;
     regh = 0x29;
@@ -40,25 +43,27 @@ void __time_critical_func(lis3mdl_read)(uint16_t *dest, uint i2c_addr) {
     i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
     i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
     i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
-    *dest = (read_buf[1] << 8) + read_buf[0];
+    xval = (read_buf[1] << 8) + read_buf[0];
 
     // not using these for now, only reading the X-axis
 
-    // regl = 0x2a;
-    // regh = 0x2b;
-    // i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
-    // i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
-    // i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
-    // i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
-    // a->y = (read_buf[1] << 8) + read_buf[0];
+    regl = 0x2a;
+    regh = 0x2b;
+    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
+    yval = (read_buf[1] << 8) + read_buf[0];
 
-    // regl = 0x2c;
-    // regh = 0x2d;
-    // i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
-    // i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
-    // i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
-    // i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
-    // a->z = (read_buf[1] << 8) + read_buf[0];
+    regl = 0x2c;
+    regh = 0x2d;
+    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
+    zval = (read_buf[1] << 8) + read_buf[0];
+
+    *dest = sqrtf((float)((xval * xval) + (yval * yval) + (zval * zval)));
 }
 
 void __time_critical_func(hx_drdy_isr)(uint gpio, uint32_t events) {
@@ -85,8 +90,8 @@ void phobri_v1_x_3d_core1_init(void) {
     gpio_set_function(STICK_I2C_SCL, GPIO_FUNC_I2C);
     gpio_set_function(STICK_I2C_SDA, GPIO_FUNC_I2C);
 
-    lis3mdl_setup(I2C_HX_ADDR);
     lis3mdl_setup(I2C_HY_ADDR);
+    lis3mdl_setup(I2C_HX_ADDR);
 
     gpio_set_irq_enabled_with_callback(STICK_HX_DRDY, GPIO_IRQ_EDGE_RISE, true,
                                        &hx_drdy_isr);
@@ -95,6 +100,6 @@ void phobri_v1_x_3d_core1_init(void) {
 }
 
 void phobri_v1_x_3d_read_analog(analog_data_t *analog_data) {
-    analog_data->ax1 = UINT_N_TO_AX(_hx_val, 16);
-    analog_data->ax2 = UINT_N_TO_AX(_hy_val, 16);
+    analog_data->ax1 = _hx_val;
+    analog_data->ax2 = _hy_val;
 }

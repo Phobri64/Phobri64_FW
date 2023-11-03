@@ -20,4 +20,5 @@
 #define ZTH_SEPARATE_CAL_READ 1
 #endif
 
+#define ZTH_STICK_INTERVAL 2000
 #endif // ZENITH_CFG_H

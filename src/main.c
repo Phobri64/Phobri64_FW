@@ -1,4 +1,5 @@
 #include "main.h"
+#include <hardware/adc.h>
 #include <stdio.h>
 
 void setup_gpio_button(uint8_t gpio) {
@@ -71,6 +72,7 @@ bool cb_zenith_user_webusb_cmd(uint8_t *in, uint8_t *out) { return false; }
 void cb_zenith_user_settings_reset(uint8_t *data) {}
 
 int main() {
+    adc_run(0);
     set_sys_clock_khz(130000, true);
 
     stdio_uart_init_full(DEBUG_UART, 115200, DEBUG_TX_PIN, -1);
@@ -78,6 +80,7 @@ int main() {
     printf("Phobri64 Started.\n");
 
     setup_gpio_button(BTN_START_PIN);
+    gpio_set_function(BTN_START_PIN, GPIO_FUNC_SIO);
     // Handle bootloader stuff
     if (!gpio_get(BTN_START_PIN)) {
         reset_usb_boot(0, 0);
