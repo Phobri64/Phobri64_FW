@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define CALIB_AVG_LEN_BITS 6
-#define NORMAL_AVG_LEN_BITS 4
+#define NORMAL_AVG_LEN_BITS 0
 
 running_avg_t x_avg;
 running_avg_t y_avg;
@@ -51,4 +51,11 @@ inline void phobri_proto_core1_inject(analog_data_t *analog_data) {
     uint16_t raw_y = read_ext_adc(false);
     update_running_avg(&x_avg, raw_x);
     update_running_avg(&y_avg, raw_y);
+}
+
+void cb_zenith_read_analog_cal(analog_data_t *analog) {
+    analog->ax1 = UINT_N_TO_AX(
+        (uint16_t)(x_avg.running_sum_large >> CALIB_AVG_LEN_BITS), 12);
+    analog->ax2 = UINT_N_TO_AX(
+        (uint16_t)(y_avg.running_sum_large >> CALIB_AVG_LEN_BITS), 12);
 }
