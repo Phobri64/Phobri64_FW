@@ -1,18 +1,17 @@
 #include "hw/phobri_v1_X.h"
 #include "zenith/types.h"
 #include "zenith/utilities/running_avg.h"
+#include "zenith_cfg.h"
 #include <hardware/gpio.h>
 
 #define CALIB_AVG_LEN_BITS 3
 #define NORMAL_AVG_LEN_BITS 0
 
-running_avg_t x_avg;
-running_avg_t y_avg;
-ax_t hybrid_lis3mdl_val = 0;
+ten_d_analysis_t td;
 
 void hybrid_lis3mdl_setup(uint i2c_addr) {
     // Temp disabled, LP mode w/ FAST_ODR @ 1kHZ
-    uint8_t ctrl_reg1_cfg[] = {0x20, 0b00000010};
+    uint8_t ctrl_reg1_cfg[] = {0x20, 0b10000010};
     // Full scale +/- 4G
     // Not needed for now because matches default
     uint8_t ctrl_reg2_cfg[] = {0x21, 0b01100000};
@@ -27,48 +26,88 @@ void hybrid_lis3mdl_setup(uint i2c_addr) {
     i2c_write_blocking(STICK_I2C_INTF, i2c_addr, ctrl_reg3_cfg, 2, false);
 }
 
-void __time_critical_func(hybrid_lis3mdl_read)(float *dest, uint i2c_addr) {
-
+void __time_critical_func(lis3mdl_xy_read)() {
     uint8_t regl;
     uint8_t regh;
     uint8_t read_buf[2];
     int16_t xval;
     int16_t yval;
     int16_t zval;
+    int16_t temp;
 
     regl = 0x28;
     regh = 0x29;
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, (read_buf + 1), 1, false);
     xval = (read_buf[1] << 8) + read_buf[0];
-
-    // not using these for now, only reading the X-axis
 
     regl = 0x2a;
     regh = 0x2b;
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, (read_buf + 1), 1, false);
     yval = (read_buf[1] << 8) + read_buf[0];
 
     regl = 0x2c;
     regh = 0x2d;
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regl, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, read_buf, 1, false);
-    i2c_write_blocking(STICK_I2C_INTF, i2c_addr, &regh, 1, true);
-    i2c_read_blocking(STICK_I2C_INTF, i2c_addr, (read_buf + 1), 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, (read_buf + 1), 1, false);
     zval = (read_buf[1] << 8) + read_buf[0];
 
-    *dest = INT_N_TO_AX(zval, 16); // atan2f((float)zval, (float)xval);
-    // sqrtf((float)((xval * xval) + (yval * yval) + (zval * zval)));
-}
-void __time_critical_func(hybrid_lis3mdl_isr)(uint gpio, uint32_t events) {
-    (void)gpio;
-    (void)events;
-    hybrid_lis3mdl_read(&hybrid_lis3mdl_val, I2C_HX_ADDR);
+    regl = 0x2E;
+    regh = 0x2F;
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HX_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HX_ADDR, (read_buf + 1), 1, false);
+    temp = (read_buf[1] << 8) + read_buf[0];
+
+    td.hx_x = xval;
+    td.hx_y = yval;
+    td.hx_z = zval;
+    td.hx_temp = temp;
+
+    regl = 0x28;
+    regh = 0x29;
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, (read_buf + 1), 1, false);
+    xval = (read_buf[1] << 8) + read_buf[0];
+
+    regl = 0x2a;
+    regh = 0x2b;
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, (read_buf + 1), 1, false);
+    yval = (read_buf[1] << 8) + read_buf[0];
+
+    regl = 0x2c;
+    regh = 0x2d;
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, (read_buf + 1), 1, false);
+    zval = (read_buf[1] << 8) + read_buf[0];
+
+    regl = 0x2E;
+    regh = 0x2F;
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regl, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, read_buf, 1, false);
+    i2c_write_blocking(STICK_I2C_INTF, I2C_HY_ADDR, &regh, 1, true);
+    i2c_read_blocking(STICK_I2C_INTF, I2C_HY_ADDR, (read_buf + 1), 1, false);
+    temp = (read_buf[1] << 8) + read_buf[0];
+
+    td.hy_x = xval;
+    td.hy_y = yval;
+    td.hy_z = zval;
+    td.hy_temp = temp;
 }
 
 inline void ads7142_write_reg(uint8_t regaddr, uint8_t regval) {
@@ -99,11 +138,8 @@ void __time_critical_func(ads7142_isr)(uint gpio, uint32_t events) {
 
     i2c_write_blocking(STICK_I2C_INTF, I2C_ADC_ADDR, data_buf, 2, false);
     i2c_read_blocking(STICK_I2C_INTF, I2C_ADC_ADDR, data_buf, 4, false);
-    // uint16_t _adc_x_val = ((data_buf[3] << 8) + data_buf[2]);
-    uint16_t _adc_y_val = ((data_buf[1] << 8) + data_buf[0]);
-    // update_running_avg(&x_avg, _adc_x_val);
-    update_running_avg(&y_avg, _adc_y_val);
-    // printf("%d %d\n", _adc_x_val, _adc_y_val);
+    td.ax = ((data_buf[3] << 8) + data_buf[2]);
+    td.ay = ((data_buf[1] << 8) + data_buf[0]);
     ads7142_write_reg(0x1E, 0x01);
 }
 
@@ -121,9 +157,7 @@ void phobri_v1_x_analog_core1_init(void) {
 
     ads7142_setup();
     hybrid_lis3mdl_setup(I2C_HX_ADDR);
-
-    // init_running_avg(&x_avg, CALIB_AVG_LEN_BITS, NORMAL_AVG_LEN_BITS);
-    init_running_avg(&y_avg, CALIB_AVG_LEN_BITS, NORMAL_AVG_LEN_BITS);
+    hybrid_lis3mdl_setup(I2C_HY_ADDR);
 
     // gpio_set_irq_enabled_with_callback(STICK_ADC_DRDY_N, GPIO_IRQ_EDGE_FALL,
     //                                   true, &ads7142_isr);
@@ -131,13 +165,10 @@ void phobri_v1_x_analog_core1_init(void) {
 
 void phobri_v1_x_analog_read_analog(analog_data_t *analog_data) {
     ads7142_isr(0, 0);
-    hybrid_lis3mdl_isr(0, 0);
-    analog_data->ax1 =
-        hybrid_lis3mdl_val; // UINT_N_TO_AX(
-                            //(uint16_t)(x_avg.running_sum_small >>
-                            // NORMAL_AVG_LEN_BITS), 16);
-    analog_data->ax2 = UINT_N_TO_AX(
-        (uint16_t)(y_avg.running_sum_small >> NORMAL_AVG_LEN_BITS), 16);
+    lis3mdl_xy_read();
+
+    analog_data->ax1 = UINT_N_TO_AX(td.ax, 16);
+    analog_data->ax2 = UINT_N_TO_AX(td.ay, 16);
 }
 
 /*
